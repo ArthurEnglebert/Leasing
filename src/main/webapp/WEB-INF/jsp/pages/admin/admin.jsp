@@ -6,15 +6,14 @@
 <t:userpage userName="${pageContext.request.userPrincipal.name}">
     <jsp:attribute name="headerlinks">
         <li class="active"><a href="#">Home</a></li>
+        <spring:url value="createUser" context="admin" var="createUserUrl" />
+        <li><a href="${createUserUrl}">Create User</a></li>
+        <spring:url value="addCar" context="admin" var="addCarUrl" />
+        <li><a href="${addCarUrl}">Add Car</a></li>
+        <spring:url value="editLockStatus" context="admin" var="editLockStatusUrl" />
+        <li><a href="${editLockStatusUrl}">Edit LockStatus</a></li>
     </jsp:attribute>
 
     <jsp:body>
-        <spring:url value="/createUser" context="/admin" var="createUserUrl" />
-        <form action="${createUserUrl}" method="get" id="createUserUrl">
-            <input type="text" name="username" />
-            <input type="password" name="password" />
-            <input type="checkbox" name="isAdmin" />
-            <input type="submit" value="Envoyer" />
-        </form>
     </jsp:body>
 </t:userpage>

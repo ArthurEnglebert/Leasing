@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Named;
+import java.sql.SQLException;
 
 @Named
 public class UserServiceImpl implements UserService {
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
             userDao.save(user);
         }
         catch (Exception ex) {
+
             throw ex;
         }
 

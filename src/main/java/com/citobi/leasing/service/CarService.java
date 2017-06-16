@@ -7,4 +7,6 @@ public interface CarService {
     boolean delete(long id);
     Car getById(long id);
     boolean updateCar(Car car);
+
+    Iterable<Car> getAll();
 }
