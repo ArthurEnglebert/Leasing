@@ -34,4 +34,14 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
+
+    @Override
+    public User getUser(String username) {
+        try {
+            return userDao.findByUsername(username);
+        }
+        catch (Exception ex) {
+            throw ex;
+        }
+    }
 }

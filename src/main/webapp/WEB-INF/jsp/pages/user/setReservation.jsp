@@ -5,13 +5,9 @@
 
 <t:userpage userName="${pageContext.request.userPrincipal.name}">
     <jsp:attribute name="headerlinks">
-        <spring:url value="" context="user" var="adminHomeUrl" />
-        <li><a href="${adminHomeUrl}">Home</a></li>
-        <spring:url value="addUser" context="admin" var="addUserUrl" />
-        <li><a href="${addUserUrl}">Add User</a></li>
-        <spring:url value="addCar" context="admin" var="addCarUrl" />
-        <li><a href="${addCarUrl}">Add Car</a></li>
-        <li class="active"><a href="#">Edit LockStatus</a></li>
+        <spring:url value="" context="user" var="homeUrl" />
+        <li><a href="${homeUrl}">Home</a></li>
+        <li class="active"><a href="#">Set Reservation</a></li>
     </jsp:attribute>
 
     <jsp:body>
@@ -23,15 +19,10 @@
                 <div class="msg">${msg}</div>
             </c:if>
         </div>
-        <spring:url value="editLockStatus" context="admin" var="editLockStatusUrl" />
-        <form action="${editLockStatus}" method="POST" id="editLockStatus" autocomplete="off">
+
+        <spring:url value="setReservation" context="user" var="setReservationUrl" />
+        <form action="${setReservationUrl}" method="POST" id="setReservation" autocomplete="off">
             <table>
-                <tr>
-                    <td><label for="lockStatus">LockStatus:</label></td>
-                    <td><input type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).MAINTENANCE.toString()"/>"> Maintenance</td>
-                    <td><input type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).REPAIR.toString()"/>"> Repair</td>
-                    <td><input type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).NONE.toString()"/>" checked> None</td>
-                </tr>
                 <tr>
                     <td><label for="carId">Car:</label></td>
                     <td>
@@ -41,6 +32,14 @@
                             </c:forEach>
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td><label for="start">Start of Reservation:</label></td>
+                    <td><input type="date" name="start" id="start" min="${startTime}"/></td>
+                </tr>
+                <tr>
+                    <td><label for="end">End of Reservation:</label></td>
+                    <td><input type="date" name="end" id="end" min="${endTime}"/></td>
                 </tr>
                 <tr>
                     <td colspan='2'>

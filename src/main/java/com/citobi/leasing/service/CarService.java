@@ -9,4 +9,6 @@ public interface CarService {
     boolean updateCar(Car car);
 
     Iterable<Car> getAll();
+
+    Iterable<Car> getAvailables();
 }

@@ -3,7 +3,9 @@ package com.citobi.leasing.service;
 
 import com.citobi.leasing.dao.CarDao;
 import com.citobi.leasing.domain.Car;
+import com.citobi.leasing.domain.CarSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.inject.Named;
 import java.util.List;
@@ -19,12 +21,11 @@ public class CarServiceImpl implements CarService {
         Car car = null;
         try {
             car = new Car();
-            carDao.save(car);
+            return carDao.save(car);
         }
         catch (Exception ex) {
             return null;
         }
-        return car;
     }
 
     @Override
@@ -65,5 +66,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public Iterable<Car> getAll() {
         return carDao.findAll();
+    }
+
+    @Override
+    public Iterable<Car> getAvailables() {
+        return carDao.findAll(CarSpecifications.carIsAvailable());
     }
 }
