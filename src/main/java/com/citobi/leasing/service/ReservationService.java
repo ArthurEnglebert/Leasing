@@ -28,4 +28,11 @@ public interface ReservationService {
      * @return the chosen car if one is eligible, null otherwise
      */
     Car chooseCarForPeriod(Iterable<Car> cars, Date start, Date end);
+
+    /**
+     * Retrieve a list of reservations to come set of a specific user
+     * @param user the user
+     * @return the list of reservations to come for that user
+     */
+    Iterable<Reservation> getReservationsToComeFor(User user);
 }

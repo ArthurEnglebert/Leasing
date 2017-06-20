@@ -46,6 +46,7 @@ public class AdminController {
 
         ModelAndView model = new ModelAndView();
         model.setViewName(PREFIX_JSP + "createUser");
+        model.addObject("title", "Add user");
 
         if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
             try {
@@ -70,6 +71,7 @@ public class AdminController {
                                   @RequestParam(value = "model_id", required = false) Long model_id) {
         ModelAndView model = new ModelAndView();
         model.setViewName(PREFIX_JSP + "addCar");
+        model.addObject("title", "Add car");
 
         model.addObject("models", modelService.getAll());
 
@@ -96,6 +98,7 @@ public class AdminController {
                                        @RequestParam(value = "lockStatus", required = false) LockStatus lockStatus) {
         ModelAndView model = new ModelAndView();
         model.setViewName(PREFIX_JSP + "editLockStatus");
+        model.addObject("title", "Lock cars");
 
         if (carId != null && lockStatus != null && carId != 0) {
             try {

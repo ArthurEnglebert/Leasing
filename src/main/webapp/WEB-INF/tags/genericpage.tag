@@ -3,7 +3,7 @@
 
 <html>
     <head>
-        <title>${title}</title>
+        <title>Leasing - ${title}</title>
 
         <jsp:include page="/WEB-INF/jsp/css.jsp" />
         <jsp:include page="/WEB-INF/jsp/script.jsp" />

@@ -58,8 +58,11 @@ public class UserController {
                                        @RequestParam(value = "modelId", required = false) Long modelId,
                                        Principal principal) {
 
+        User user = userService.getUser(principal.getName());
+
         ModelAndView model = new ModelAndView();
         model.setViewName(PREFIX_JSP + "setReservation");
+        model.addObject("title", "Reserve");
 
         Iterable<Car> carsAvailable = carService.getAvailables();
         List<Model> models = new ArrayList<>();
@@ -81,7 +84,6 @@ public class UserController {
 
         if (start != null && end != null && modelId != null && modelId != 0) {
             try {
-                User user = userService.getUser(principal.getName());
                 Model modelOfCar = modelService.getModelById(modelId);
                 Iterable<Car> cars = carService.getCarsAvailableWithModel(modelOfCar);
 
@@ -98,6 +100,9 @@ public class UserController {
                 model.addObject("error", "Error creating the reservation: " + ex.getMessage());
             }
         }
+
+        Iterable<Reservation> reservationsToCome = reservationService.getReservationsToComeFor(user);
+        model.addObject("reservationsToCome", reservationsToCome);
 
         return model;
     }
