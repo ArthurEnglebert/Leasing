@@ -1,11 +1,10 @@
 package com.citobi.leasing.dao;
 
-import com.citobi.leasing.domain.User;
+import com.citobi.leasing.domain.Model;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
 
 @Transactional
-public interface UserDao extends CrudRepository<User, Long> {
-    User findByUsername(String username);
+public interface ModelDao extends CrudRepository<Model, Long> {
 }

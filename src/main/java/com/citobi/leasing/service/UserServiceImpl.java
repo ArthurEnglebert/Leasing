@@ -3,10 +3,10 @@ package com.citobi.leasing.service;
 import com.citobi.leasing.dao.UserDao;
 import com.citobi.leasing.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Named;
-import java.sql.SQLException;
 
 @Named
 public class UserServiceImpl implements UserService {
@@ -26,9 +26,10 @@ public class UserServiceImpl implements UserService {
             if(isAdmin) user.setAdmin();
 
             userDao.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalStateException("User with username '" + username + "' already exists.");
         }
         catch (Exception ex) {
-
             throw ex;
         }
 
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
             return userDao.findByUsername(username);
         }
         catch (Exception ex) {
-            throw ex;
+            return null;
         }
     }
 }

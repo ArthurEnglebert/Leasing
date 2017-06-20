@@ -17,6 +17,9 @@ public class AppConfig extends SpringBootServletInitializer {
         SpringApplication.run(AppConfig.class, args);
     }
 
+    /**
+     * Define datasource implementation to use
+     */
     @Bean(name = "dataSource")
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
@@ -29,6 +32,9 @@ public class AppConfig extends SpringBootServletInitializer {
         return driverManagerDataSource;
     }
 
+    /**
+     * Define viewresolver to use
+     */
     @Bean
     public InternalResourceViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();

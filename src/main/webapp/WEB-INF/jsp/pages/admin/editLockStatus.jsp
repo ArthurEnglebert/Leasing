@@ -3,51 +3,57 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" session="true"%>
 
-<t:userpage userName="${pageContext.request.userPrincipal.name}">
-    <jsp:attribute name="headerlinks">
-        <spring:url value="" context="user" var="adminHomeUrl" />
-        <li><a href="${adminHomeUrl}">Home</a></li>
-        <spring:url value="addUser" context="admin" var="addUserUrl" />
-        <li><a href="${addUserUrl}">Add User</a></li>
-        <spring:url value="addCar" context="admin" var="addCarUrl" />
-        <li><a href="${addCarUrl}">Add Car</a></li>
-        <li class="active"><a href="#">Edit LockStatus</a></li>
-    </jsp:attribute>
-
+<t:userpage>
     <jsp:body>
-        <div id="create-user">
-            <c:if test="${not empty error}">
-                <div class="error">${error}</div>
-            </c:if>
-            <c:if test="${not empty msg}">
-                <div class="msg">${msg}</div>
-            </c:if>
-        </div>
         <spring:url value="editLockStatus" context="admin" var="editLockStatusUrl" />
         <form action="${editLockStatus}" method="POST" id="editLockStatus" autocomplete="off">
-            <table>
-                <tr>
-                    <td><label for="lockStatus">LockStatus:</label></td>
-                    <td><input type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).MAINTENANCE.toString()"/>"> Maintenance</td>
-                    <td><input type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).REPAIR.toString()"/>"> Repair</td>
-                    <td><input type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).NONE.toString()"/>" checked> None</td>
-                </tr>
-                <tr>
-                    <td><label for="carId">Car:</label></td>
-                    <td>
-                        <select name="carId" id="carId">
-                            <c:forEach items="${cars}" var="car">
-                                <option value="${car.id}">${car.id}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan='2'>
-                        <input name="submit" type="submit" value="submit" />
-                    </td>
-                </tr>
-            </table>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">${error}</div>
+            </c:if>
+            <c:if test="${not empty msg}">
+                <div class="alert alert-info" role="alert">${msg}</div>
+            </c:if>
+
+            <div class="form-group row">
+                <label for="carId" class="col-sm-2 col-form-label">Car</label>
+                <div class="col-sm-10">
+                    <select name="carId" id="carId" class="custom-select" required="">
+                        <c:forEach items="${cars}" var="car">
+                            <option value="${car.id}">${car.numberPlate}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="lockStatus" class="col-sm-2 col-form-label">Lock</label>
+                <div class="col-sm-10">
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).MAINTENANCE.toString()"/>">
+                            Maintenance
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).REPAIR.toString()"/>">
+                            Repair
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="lockStatus" id="lockStatus" value="<spring:eval expression="T(com.citobi.leasing.domain.LockStatus).NONE.toString()"/>" checked>
+                            None
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Change lock status</button>
+                </div>
+            </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </jsp:body>

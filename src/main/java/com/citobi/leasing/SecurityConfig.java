@@ -21,6 +21,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
+    /**
+     * Configure the authentication system for Security
+     */
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
@@ -28,11 +31,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("select username,password,enabled from users where username=?")
                 .authoritiesByUsernameQuery("select username, role from users where username=?");
 
+        // For testing purpose, have an inmemory user so that we are not locked out of the system
+        //todo have a multi environment system and have this line only on test/dev and not production
+        auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
     }
 
+    /**
+     * Secure the application endpoints to user levels
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.authorizeRequests()
                 .antMatchers("/user/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
@@ -47,12 +55,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf();
     }
 
+    /**
+     * Define the password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder;
     }
 
+    /**
+     * Delegate the AuthenticationSuccessHander to one of our own so we can redirect correctly
+     */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         AuthenticationSuccessHandler authenticationSuccessHandler = new DualUrlAuthenticationSuccessHandler();

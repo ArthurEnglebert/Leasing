@@ -3,50 +3,43 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" session="true"%>
 
-<t:userpage userName="${pageContext.request.userPrincipal.name}">
-    <jsp:attribute name="headerlinks">
-        <spring:url value="" context="user" var="homeUrl" />
-        <li><a href="${homeUrl}">Home</a></li>
-        <li class="active"><a href="#">Set Reservation</a></li>
-    </jsp:attribute>
-
+<t:userpage>
     <jsp:body>
-        <div id="create-user">
-            <c:if test="${not empty error}">
-                <div class="error">${error}</div>
-            </c:if>
-            <c:if test="${not empty msg}">
-                <div class="msg">${msg}</div>
-            </c:if>
-        </div>
-
         <spring:url value="setReservation" context="user" var="setReservationUrl" />
         <form action="${setReservationUrl}" method="POST" id="setReservation" autocomplete="off">
-            <table>
-                <tr>
-                    <td><label for="carId">Car:</label></td>
-                    <td>
-                        <select name="carId" id="carId">
-                            <c:forEach items="${cars}" var="car">
-                                <option value="${car.id}">${car.id}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="start">Start of Reservation:</label></td>
-                    <td><input type="date" name="start" id="start" min="${startTime}"/></td>
-                </tr>
-                <tr>
-                    <td><label for="end">End of Reservation:</label></td>
-                    <td><input type="date" name="end" id="end" min="${endTime}"/></td>
-                </tr>
-                <tr>
-                    <td colspan='2'>
-                        <input name="submit" type="submit" value="submit" />
-                    </td>
-                </tr>
-            </table>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">${error}</div>
+            </c:if>
+            <c:if test="${not empty msg}">
+                <div class="alert alert-info" role="alert">${msg}</div>
+            </c:if>
+            <div class="form-group row">
+                <label for="modelId" class="col-sm-2 col-form-label">Model</label>
+                <div class="col-sm-10">
+                    <select name="modelId" id="modelId" class="custom-select">
+                        <c:forEach items="${modelsAvailable}" var="model">
+                            <option value="${model.id}">${model.brand.name} - ${model.name}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="start" class="col-sm-2 col-form-label">Start of Reservation</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="date" name="start" id="start" min="${startTime}" required="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="end" class="col-sm-2 col-form-label">End of Reservation</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="date" name="end" id="end" min="${endTime}" required="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Reserve</button>
+                </div>
+            </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </jsp:body>

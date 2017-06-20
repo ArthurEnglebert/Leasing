@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "cars")
+@Table(name = "cars", uniqueConstraints = {@UniqueConstraint(columnNames = {"numberPlate"})})
 public class Car {
 
     @Id
@@ -13,6 +13,14 @@ public class Car {
 
     @NotNull
     private LockStatus lockStatus = LockStatus.NONE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "model_id")
+    @NotNull
+    private Model model;
+
+    @NotNull
+    private String numberPlate;
 
     public Car() { }
 
@@ -38,5 +46,22 @@ public class Car {
 
     public boolean isLocked() {
         return lockStatus != LockStatus.NONE;
+    }
+
+
+    public String getNumberPlate() {
+        return numberPlate;
+    }
+
+    public void setNumberPlate(String numberPlate) {
+        this.numberPlate = numberPlate;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 }

@@ -2,47 +2,43 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" session="true"%>
-<t:userpage userName="${pageContext.request.userPrincipal.name}">
-    <jsp:attribute name="headerlinks">
-        <spring:url value="" context="admin" var="adminHomeUrl" />
-        <li><a href="${adminHomeUrl}">Home</a></li>
-        <li class="active"><a href="#">Add User</a></li>
-        <spring:url value="addCar" context="admin" var="addCarUrl" />
-        <li><a href="${addCarUrl}">Add Car</a></li>
-        <spring:url value="editLockStatus" context="admin" var="editLockStatusUrl" />
-        <li><a href="${editLockStatusUrl}">Edit LockStatus</a></li>
-    </jsp:attribute>
-
+<t:userpage>
     <jsp:body>
-        <div id="create-user">
-            <c:if test="${not empty error}">
-                <div class="error">${error}</div>
-            </c:if>
-            <c:if test="${not empty msg}">
-                <div class="msg">${msg}</div>
-            </c:if>
-        </div>
         <spring:url value="/createUser" context="/admin" var="createUserUrl" />
         <form action="${createUserUrl}" method="POST" id="createUserUrl" autocomplete="off">
-            <table>
-                <tr>
-                    <td><label for="username">Username:</label></td>
-                    <td><input type="text" name="username" id="username"/></td>
-                </tr>
-                <tr>
-                    <td><label for="password">Password:</label></td>
-                    <td><input type="password" name="password" id="password"/></td>
-                </tr>
-                <tr>
-                    <td><label for="isAdmin">Is Admin:</label></td>
-                    <td><input type="checkbox" name="isAdmin" id="isAdmin"/></td>
-                </tr>
-                <tr>
-                    <td colspan='2'>
-                        <input name="submit" type="submit" value="submit" />
-                    </td>
-                </tr>
-            </table>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">${error}</div>
+            </c:if>
+            <c:if test="${not empty msg}">
+                <div class="alert alert-info" role="alert">${msg}</div>
+            </c:if>
+
+            <div class="form-group row">
+                <label for="username" class="col-sm-2 col-form-label">Username</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" name="username" id="username" placeholder="JohnSmith" required="" autofocus="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="password" name="password" id="password" placeholder="************" required="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-10 offset-sm-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="isAdmin" id="isAdmin"> can access administration panel
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
+            </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </jsp:body>

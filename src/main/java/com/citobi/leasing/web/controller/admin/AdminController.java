@@ -2,8 +2,10 @@ package com.citobi.leasing.web.controller.admin;
 
 import com.citobi.leasing.domain.Car;
 import com.citobi.leasing.domain.LockStatus;
+import com.citobi.leasing.domain.Model;
 import com.citobi.leasing.domain.User;
 import com.citobi.leasing.service.CarService;
+import com.citobi.leasing.service.ModelService;
 import com.citobi.leasing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-
+/**
+ * /admin --> admin related functions handlers
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -26,17 +29,8 @@ public class AdminController {
     @Autowired
     CarService carService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView adminPage() {
-
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security Password Encoder");
-        model.addObject("message", "This page is for ROLE_ADMIN only!");
-        model.setViewName(PREFIX_JSP + "admin");
-
-        return model;
-
-    }
+    @Autowired
+    ModelService modelService;
 
     /**
      * /create  --> Create a new user and save it in the database.
@@ -44,9 +38,8 @@ public class AdminController {
      * @param username User's name
      * @param password User's password
      * @param isAdmin States if user has ADMIN credentials
-     * @return A string describing if the user is succesfully created or not.
      */
-    @RequestMapping(value = "createUser", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = {"", "createUser"}, method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView create(@RequestParam(value = "username", required = false) String username,
                          @RequestParam(value = "password", required = false) String password,
                          @RequestParam(value = "isAdmin", required = false) boolean isAdmin) {
@@ -60,30 +53,44 @@ public class AdminController {
                 model.addObject("msg", "User succesfully created!(id = " + user.getId() + ")");
             }
             catch (Exception ex) {
-                model.addObject("error", "Error creating the user:" + ex.getMessage());
+                model.addObject("error", "Error creating the user: " + ex.getMessage());
             }
         }
 
         return model;
     }
 
+    /**
+     * /addCar --> add a new car to the park
+     * @param plate the plate numbers of the new car
+     * @param model_id the model id of the new car
+     */
     @RequestMapping(value = "addCar", method = { RequestMethod.GET, RequestMethod.POST })
-    public ModelAndView createCar(HttpServletRequest request) {
+    public ModelAndView createCar(@RequestParam(value = "plate", required = false) String plate,
+                                  @RequestParam(value = "model_id", required = false) Long model_id) {
         ModelAndView model = new ModelAndView();
         model.setViewName(PREFIX_JSP + "addCar");
 
-        if (request.getMethod().equals("POST")) {
+        model.addObject("models", modelService.getAll());
+
+        if (plate != null && model_id != null && !plate.isEmpty() && model_id != 0) {
             try {
-                Car car = carService.addCar();
-                model.addObject("msg", "Car successfully created! (id = " + car.getId() + ")");
+                Model modelOfCar = modelService.getModelById(model_id);
+                Car car = carService.addCar(plate, modelOfCar);
+                model.addObject("msg", "Car successfully created! (plate = " + car.getNumberPlate() + ")");
             } catch (Exception ex) {
-                model.addObject("error", "Error creating the car:" + ex.getMessage());
+                model.addObject("error", "Error creating the car: " + ex.getMessage());
             }
         }
 
         return model;
     }
 
+    /**
+     * /editLockStatus --> change the lock status of a car of the park, locking it for the time being (being removed of the available list) or unlocking it
+     * @param carId the id of the car to change status
+     * @param lockStatus the new status
+     */
     @RequestMapping(value = "editLockStatus", method = { RequestMethod.GET, RequestMethod.POST })
     public ModelAndView editLockStatus(@RequestParam(value = "carId", required = false) Long carId,
                                        @RequestParam(value = "lockStatus", required = false) LockStatus lockStatus) {
@@ -94,10 +101,10 @@ public class AdminController {
             try {
                 Car car = carService.getById(carId);
                 car.setLockStatus(lockStatus);
-                carService.updateCar(car);
+                carService.update(car);
                 model.addObject("msg", "Car successfully changed! (id = " + car.getId() + ", lockStatus = " + car.getLockStatus().toString() + ")");
             } catch (Exception ex) {
-                model.addObject("error", "Error changing car:" + ex.getMessage());
+                model.addObject("error", "Error changing car: " + ex.getMessage());
             }
         }
 

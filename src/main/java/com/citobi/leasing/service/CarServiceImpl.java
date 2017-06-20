@@ -4,10 +4,12 @@ package com.citobi.leasing.service;
 import com.citobi.leasing.dao.CarDao;
 import com.citobi.leasing.domain.Car;
 import com.citobi.leasing.domain.CarSpecifications;
+import com.citobi.leasing.domain.Model;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.inject.Named;
+import java.util.Date;
 import java.util.List;
 
 @Named
@@ -17,27 +19,29 @@ public class CarServiceImpl implements CarService {
     private CarDao carDao;
 
     @Override
-    public Car addCar() {
+    public Car addCar(String plate, Model model) {
         Car car = null;
         try {
             car = new Car();
+            car.setNumberPlate(plate);
+            car.setModel(model);
             return carDao.save(car);
         }
-        catch (Exception ex) {
-            return null;
+        catch(DataIntegrityViolationException ex) {
+            throw new IllegalStateException("A car with the plate number '"+ plate +"' already exists");
+        } catch (Exception ex) {
+            throw ex;
         }
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean update(Car car) {
         try {
-            Car car = new Car(id);
-            carDao.delete(car);
-        }
-        catch (Exception ex) {
+            carDao.save(car);
+            return true;
+        } catch (Exception ex) {
             return false;
         }
-        return true;
     }
 
     @Override
@@ -53,17 +57,6 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public boolean updateCar(Car car) {
-        try {
-            carDao.save(car);
-        }
-        catch (Exception ex) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public Iterable<Car> getAll() {
         return carDao.findAll();
     }
@@ -71,5 +64,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public Iterable<Car> getAvailables() {
         return carDao.findAll(CarSpecifications.carIsAvailable());
+    }
+
+    @Override
+    public Iterable<Car> getCarsAvailableWithModel(Model model) {
+        return carDao.findAll(CarSpecifications.carsWithModel(model));
     }
 }
